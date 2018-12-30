@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { fetchPhones } from '../actions/index';
 
 class Phones extends Component {
 

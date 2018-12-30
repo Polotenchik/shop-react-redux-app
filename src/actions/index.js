@@ -1,4 +1,5 @@
 import { FETCH_PHONES_START, FETCH_PHONES_SUCCESS, FETCH_PHONES_FAILURE } from '../actionTypes';
+import { fetchPhones as fetchPhonesApi } from '../api/index';
 
 export const fetchPhones = () => async dispatch => {
   dispatch({ type: FETCH_PHONES_START })
