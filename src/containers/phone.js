@@ -31,7 +31,7 @@ class Phone extends Component {
           <p>{ key }</p>
         </div>
         <div className='ab-details-info'>
-          { value}
+          { value }
         </div>
       </div>
     ));
