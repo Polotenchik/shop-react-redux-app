@@ -27,4 +27,6 @@ export const getTotalBasketPrice = state => {
     )(state.basket);
 
     return totalPrice;
-}
+};
+
+export const getCategories = state => R.values(state.categories);
