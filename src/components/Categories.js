@@ -1,13 +1,43 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { getCategories } from '../selectors';
-import { Link } from 'react-router';
+import { getCategories, getActiveCategoryId } from '../selectors';
+import { Link, withRouter } from 'react-router';
+import { compose } from 'redux';
+import R from 'ramda';
+import classNames from 'classnames';
 
-const Categories = ({ categories }) => {
+
+const Categories = ({ categories, activeCategoryId }) => {
 	const renderCategory = (category, index) => {
+		const getActiveState = R.propEq('id', activeCategoryId);
+		const linkClass = classNames({
+			'list-group-item': true,
+			'active': getActiveState(category)
+		});
+
 		return (
-			<Link to={`/categories/${category.id}`} className='list-group-item' key={ index }>
-				{ category.name }
+			<Link 
+				to={`/categories/${category.id}`} 
+				className={ linkClass } 
+				key={ index }
+			>
+			{ category.name }
+			</Link>
+		);
+	}
+
+	const renderAllCategories = () => {
+		const linkClass = classNames({
+			'list-group-item': true,
+			'active': R.isNil(activeCategoryId)
+		});
+
+		return (
+			<Link 
+				to='/'
+				className={ linkClass }
+			> 
+				All
 			</Link>
 		)
 	}
@@ -16,14 +46,19 @@ const Categories = ({ categories }) => {
   	<div className='well'>
 			<h4>Brand</h4>
 			<div className='list-group'>
+				{ renderAllCategories() }
 				{ categories.map((category, index) => renderCategory(category, index))};
 			</div>
     </div>
   );
 };
 
-const mapStateToProps = state => ({
-  categories: getCategories(state)
+const mapStateToProps = (state, ownProps) => ({
+	categories: getCategories(state),
+	activeCategoryId: getActiveCategoryId(ownProps)
 })
 
-export default connect(mapStateToProps, null)(Categories);
+export default compose(
+	withRouter,
+	connect(mapStateToProps, null)
+)(Categories);
