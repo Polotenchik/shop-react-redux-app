@@ -1,9 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import R from 'ramda';
+import { Link } from 'react-router';
 import { getTotalBasketPrice, getBasketWithCount } from '../selectors';
+import { removePhoneFromBasket, basketCheckout, clearBasket } from '../actions/index';
+import basket from '../reducers/basket';
 
-const Basket = ({ phones, totalPrice }) => {
+
+const Basket = ({ phones, totalPrice, removePhoneFromBasket, clearBasket, basketCheckout }) => {
   const isBasketEmpty = R.isEmpty(phones);
 
   const renderContent = () => {
@@ -22,7 +26,10 @@ const Basket = ({ phones, totalPrice }) => {
 									<td>{ phone.price }</td>
 									<td>{ phone.price }</td>
 									<td>
-										<span className='delete-cart' />
+										<span 
+											className='delete-cart'
+											onClick={() => removePhoneFromBasket(phone.id) } 
+										/>
 									</td>
 							</tr>
 						))}
@@ -44,7 +51,23 @@ const Basket = ({ phones, totalPrice }) => {
 	const renderSideBar = () => {
     return (
 			<div>
-      	Sidebar 
+      	<Link to='/' className='btn btn-info'>
+					<span className='glyphicon glyphicon-info-sign'></span>
+					<span>Continue shopping</span>
+				</Link>
+				{
+					R.not(isBasketEmpty) &&
+						<div>
+							<button className='btn btn-danger' onClick={ clearBasket }>
+								<span className='glyphicon glyphicon-trash'/>
+								Clear cart
+							</button>
+							<button className='btn btn-success' onClick={ () => basketCheckout(phones) }>
+								<span className='glyphicon glyphicon-envelope' />
+							</button>
+							Checkout
+						</div>
+				}
 			</div>
 		);
   }
@@ -68,6 +91,12 @@ const Basket = ({ phones, totalPrice }) => {
 const mapStateToProps = state => ({
   phones: getBasketWithCount(state),
   totalPrice: getTotalBasketPrice(state)
-})
+});
 
-export default connect(mapStateToProps, null)(Basket);
+const mapDispatchToProps = {
+	removePhoneFromBasket,
+	basketCheckout,
+	clearBasket
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Basket);
